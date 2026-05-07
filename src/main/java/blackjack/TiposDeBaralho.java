@@ -4,7 +4,7 @@ package blackjack;
 
 public enum TiposDeBaralho {
 
-    BARALHA1("BlackJack",
+    BARALHO1("BlackJack",
             "imagenes/r.jpg",
             "imagenes/c1.jpg,imagenes/c2.jpg,imagenes/c3.jpg,imagenes/c4.jpg,"
                     + "imagenes/c5.jpg,imagenes/c6.jpg,imagenes/c7.jpg,imagenes/c8.jpg,"
@@ -22,7 +22,7 @@ public enum TiposDeBaralho {
             "2,3,4,5,6,7,8,9,10,10,10,10,11,",
             21f, 11f),
 
-    BARALHA2("Sete e Meio",
+    BARALHO2("Sete e Meio",
             "imagenes/r.jpg",
             "imagenes/b1.jpg,imagenes/b2.jpg,imagenes/b3.jpg,imagenes/b4.jpg,"
                     + "imagenes/b5.jpg,imagenes/b6.jpg,imagenes/b7.jpg,imagenes/bs.jpg,"
