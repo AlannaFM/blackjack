@@ -87,7 +87,7 @@ public class Janela extends JFrame {
         btnPedirCarta.setEnabled(false);
         btnPlantar.setEnabled(false);
         btnNovaPartida.setEnabled(false);
-        comboBaralho.setModel(new DefaultComboBoxModel<>(TiposDeBaralho.nomesBaralhos()));
+        comboBaralho.setModel(new DefaultComboBoxModel<>(TiposDeBaralho.nomesBaralho()));
         setVisible(true);
         btnNovaPartida.requestFocus();
     }
