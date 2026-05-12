@@ -238,7 +238,7 @@ public class Janela extends JFrame {
                         areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
                     }
                 }
-            }
+            }  
 
         } catch (java.rmi.RemoteException ex) {
             timerPolling.stop();

@@ -49,7 +49,7 @@ public interface IJogoBlackJack extends Remote {
 
     // Retorna o nome da Baralho da partida em andamento, ou null se sem partida.
     String getNomeBaralho() throws RemoteException;
-
+ 
     // Limpa a última carta do jogador 1 após o cliente ter lido.
     void consumirCartaJogador1() throws RemoteException;
 

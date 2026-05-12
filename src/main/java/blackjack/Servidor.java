@@ -124,7 +124,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     @Override
     public synchronized boolean isJogador1Plantado() throws RemoteException {
         return jogador1Plantado;
-    }
+    }  
 
     @Override
     public synchronized boolean isJogador2Plantado() throws RemoteException {
