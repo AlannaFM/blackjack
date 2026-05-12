@@ -5,36 +5,36 @@ package blackjack;
 public enum TiposDeBaralho {
 
     BARALHO1("BlackJack",
-            "imagenes/r.jpg",
-            "imagenes/c1.jpg,imagenes/c2.jpg,imagenes/c3.jpg,imagenes/c4.jpg,"
-                    + "imagenes/c5.jpg,imagenes/c6.jpg,imagenes/c7.jpg,imagenes/c8.jpg,"
-                    + "imagenes/c9.jpg,imagenes/c10.jpg,imagenes/c11.jpg,imagenes/c12.jpg,"
-                    + "imagenes/c13.jpg,imagenes/d1.jpg,imagenes/d2.jpg,imagenes/d3.jpg,"
-                    + "imagenes/d4.jpg,imagenes/d5.jpg,imagenes/d6.jpg,imagenes/d7.jpg,"
-                    + "imagenes/d8.jpg,imagenes/d9.jpg,imagenes/d10.jpg,imagenes/d11.jpg,"
-                    + "imagenes/d12.jpg,imagenes/d13.jpg,imagenes/p1.jpg,imagenes/p2.jpg,"
-                    + "imagenes/p3.jpg,imagenes/p4.jpg,imagenes/p5.jpg,imagenes/p6.jpg,"
-                    + "imagenes/p7.jpg,imagenes/p8.jpg,imagenes/p9.jpg,imagenes/p10.jpg,"
-                    + "imagenes/p11.jpg,imagenes/p12.jpg,imagenes/p13.jpg,imagenes/t1.jpg,"
-                    + "imagenes/t2.jpg,imagenes/t3.jpg,imagenes/t4.jpg,imagenes/t5.jpg,"
-                    + "imagenes/t6.jpg,imagenes/t7.jpg,imagenes/t8.jpg,imagenes/t9.jpg,"
-                    + "imagenes/t10.jpg,imagenes/t11.jpg,imagenes/t12.jpg,imagenes/t13.jpg",
+            "imagens/r.jpg",
+            "imagens/c1.jpg,imagens/c2.jpg,imagens/c3.jpg,imagens/c4.jpg,"
+                    + "imagens/c5.jpg,imagens/c6.jpg,imagens/c7.jpg,imagens/c8.jpg,"
+                    + "imagens/c9.jpg,imagens/c10.jpg,imagens/c11.jpg,imagens/c12.jpg,"
+                    + "imagens/c13.jpg,imagens/d1.jpg,imagens/d2.jpg,imagens/d3.jpg,"
+                    + "imagens/d4.jpg,imagens/d5.jpg,imagens/d6.jpg,imagens/d7.jpg,"
+                    + "imagens/d8.jpg,imagens/d9.jpg,imagens/d10.jpg,imagens/d11.jpg,"
+                    + "imagens/d12.jpg,imagens/d13.jpg,imagens/p1.jpg,imagens/p2.jpg,"
+                    + "imagens/p3.jpg,imagens/p4.jpg,imagens/p5.jpg,imagens/p6.jpg,"
+                    + "imagens/p7.jpg,imagens/p8.jpg,imagens/p9.jpg,imagens/p10.jpg,"
+                    + "imagens/p11.jpg,imagens/p12.jpg,imagens/p13.jpg,imagens/t1.jpg,"
+                    + "imagens/t2.jpg,imagens/t3.jpg,imagens/t4.jpg,imagens/t5.jpg,"
+                    + "imagens/t6.jpg,imagens/t7.jpg,imagens/t8.jpg,imagens/t9.jpg,"
+                    + "imagens/t10.jpg,imagens/t11.jpg,imagens/t12.jpg,imagens/t13.jpg",
             "2,3,4,5,6,7,8,9,10,10,10,10,11,",
             21f, 11f),
 
     BARALHO2("Sete e Meio",
-            "imagenes/r.jpg",
-            "imagenes/b1.jpg,imagenes/b2.jpg,imagenes/b3.jpg,imagenes/b4.jpg,"
-                    + "imagenes/b5.jpg,imagenes/b6.jpg,imagenes/b7.jpg,imagenes/bs.jpg,"
-                    + "imagenes/bc.jpg,imagenes/br.jpg,imagenes/copas1.jpg,imagenes/copas2.jpg,"
-                    + "imagenes/copas3.jpg,imagenes/copas4.jpg,imagenes/copas5.jpg,"
-                    + "imagenes/copas6.jpg,imagenes/copas7.jpg,imagenes/copass.jpg,"
-                    + "imagenes/copasc.jpg,imagenes/copasr.jpg,imagenes/e1.jpg,imagenes/e2.jpg,"
-                    + "imagenes/e3.jpg,imagenes/e4.jpg,imagenes/e5.jpg,imagenes/e6.jpg,"
-                    + "imagenes/e7.jpg,imagenes/es.jpg,imagenes/ec.jpg,imagenes/er.jpg,"
-                    + "imagenes/o1.jpg,imagenes/o2.jpg,imagenes/o3.jpg,imagenes/o4.jpg,"
-                    + "imagenes/o5.jpg,imagenes/o6.jpg,imagenes/o7.jpg,imagenes/os.jpg,"
-                    + "imagenes/oc.jpg,imagenes/or.jpg",
+            "imagens/r.jpg",
+            "imagens/b1.jpg,imagens/b2.jpg,imagens/b3.jpg,imagens/b4.jpg,"
+                    + "imagens/b5.jpg,imagens/b6.jpg,imagens/b7.jpg,imagens/bs.jpg,"
+                    + "imagens/bc.jpg,imagens/br.jpg,imagens/copas1.jpg,imagens/copas2.jpg,"
+                    + "imagens/copas3.jpg,imagens/copas4.jpg,imagens/copas5.jpg,"
+                    + "imagens/copas6.jpg,imagens/copas7.jpg,imagens/copass.jpg,"
+                    + "imagens/copasc.jpg,imagens/copasr.jpg,imagens/e1.jpg,imagens/e2.jpg,"
+                    + "imagens/e3.jpg,imagens/e4.jpg,imagens/e5.jpg,imagens/e6.jpg,"
+                    + "imagens/e7.jpg,imagens/es.jpg,imagens/ec.jpg,imagens/er.jpg,"
+                    + "imagens/o1.jpg,imagens/o2.jpg,imagens/o3.jpg,imagens/o4.jpg,"
+                    + "imagens/o5.jpg,imagens/o6.jpg,imagens/o7.jpg,imagens/os.jpg,"
+                    + "imagens/oc.jpg,imagens/or.jpg",
             "1,2,3,4,5,6,7,0.5,0.5,0.5,",
             7.5f, 7f);
 
