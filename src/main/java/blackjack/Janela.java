@@ -195,12 +195,11 @@ public class Janela extends JFrame {
 
             if (partidaAtual == null) return;
 
-            // Carta para J1
             String cartaJ1 = jogo.getUltimaCartaJogador1();
             if (cartaJ1 != null && partidaAtual != null) {
                 jogo.consumirCartaJogador1();
                 if (ehServidor) adicionarCartaAoPainel(painelJ1, cartaJ1, partidaAtual.getJogador1(), true);
-                else            adicionarCartaAoPainel(painelJ2, cartaJ1, partidaAtual.getJogador2(), false);
+                else adicionarCartaAoPainel(painelJ1, cartaJ1, partidaAtual.getJogador1(), false);
             }
 
             // Carta para J2
@@ -208,7 +207,7 @@ public class Janela extends JFrame {
             if (cartaJ2 != null && partidaAtual != null) {
                 jogo.consumirCartaJogador2();
                 if (ehServidor) adicionarCartaAoPainel(painelJ2, cartaJ2, partidaAtual.getJogador2(), false);
-                else            adicionarCartaAoPainel(painelJ1, cartaJ2, partidaAtual.getJogador1(), true);
+                else adicionarCartaAoPainel(painelJ2, cartaJ2, partidaAtual.getJogador2(), true);  
             }
 
             // Plantadas
@@ -327,6 +326,13 @@ public class Janela extends JFrame {
             String nomeBaralho = (String) comboBaralho.getSelectedItem();
             jogo.novaPartida(nomeBaralho);
             iniciarPartidaLocal(nomeBaralho);
+
+            // Cartas iniciais já foram criadas no servidor; busca e consome imediatamente
+            String c1 = jogo.getUltimaCartaJogador1();
+            if (c1 != null) { jogo.consumirCartaJogador1(); adicionarCartaAoPainel(painelJ1, c1, partidaAtual.getJogador1(), true); }
+            String c2 = jogo.getUltimaCartaJogador2();
+            if (c2 != null) { jogo.consumirCartaJogador2(); adicionarCartaAoPainel(painelJ2, c2, partidaAtual.getJogador2(), false); }
+
             btnNovaPartida.setEnabled(false);
             lblStatus.setText("Partida iniciada! Sua vez, " + nomeJogador1);
         } catch (Exception e) {
@@ -339,12 +345,14 @@ public class Janela extends JFrame {
             String url;
             if (ehServidor) {
                 url = jogo.pedirCartaJogador1();
+                jogo.consumirCartaJogador1(); // evita reprocessamento no polling
                 adicionarCartaAoPainel(painelJ1, url, partidaAtual.getJogador1(), true);
                 btnPedirCarta.setEnabled(false);
                 btnPlantar.setEnabled(false);
                 lblStatus.setText("Aguardando " + nomeJogador2 + "...");
             } else {
                 url = jogo.pedirCartaJogador2();
+                jogo.consumirCartaJogador2(); // 
                 adicionarCartaAoPainel(painelJ2, url, partidaAtual.getJogador2(), true);
                 btnPedirCarta.setEnabled(false);
                 btnPlantar.setEnabled(false);
