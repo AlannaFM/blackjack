@@ -95,7 +95,7 @@ public class Janela extends JFrame {
     // ── Iniciar servidor (hospedar) ────────────────────────────────────────────
     public void iniciarServidor(int portaDesejada) {
         try {
-            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+            System.setProperty("java.rmi.server.hostname", "127.0.0.1");//ip
             servidorLocal = new Servidor(nomeJogador1);
             registro = LocateRegistry.createRegistry(portaDesejada == 0 ? Registry.REGISTRY_PORT : portaDesejada);
             porta = portaDesejada == 0 ? Registry.REGISTRY_PORT : portaDesejada;
@@ -197,7 +197,7 @@ public class Janela extends JFrame {
 
             // Carta para J1
             String cartaJ1 = jogo.getUltimaCartaJogador1();
-            if (cartaJ1 != null) {
+            if (cartaJ1 != null && partidaAtual != null) {
                 jogo.consumirCartaJogador1();
                 if (ehServidor) adicionarCartaAoPainel(painelJ1, cartaJ1, partidaAtual.getJogador1(), true);
                 else            adicionarCartaAoPainel(painelJ2, cartaJ1, partidaAtual.getJogador2(), false);
@@ -205,7 +205,7 @@ public class Janela extends JFrame {
 
             // Carta para J2
             String cartaJ2 = jogo.getUltimaCartaJogador2();
-            if (cartaJ2 != null) {
+            if (cartaJ2 != null && partidaAtual != null) {
                 jogo.consumirCartaJogador2();
                 if (ehServidor) adicionarCartaAoPainel(painelJ2, cartaJ2, partidaAtual.getJogador2(), false);
                 else            adicionarCartaAoPainel(painelJ1, cartaJ2, partidaAtual.getJogador1(), true);
@@ -225,11 +225,13 @@ public class Janela extends JFrame {
                 areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
             }
 
-        } catch (Exception ex) {
+        } catch (java.rmi.RemoteException ex) {
             timerPolling.stop();
             resetarJanela();
             setStatusConexao(Color.RED, "Conexão perdida");
             JOptionPane.showMessageDialog(this, "Conexão perdida com o servidor.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -277,15 +279,15 @@ public class Janela extends JFrame {
         painel.setLayout(new GridLayout((n/4)+((n%4!=0)?1:0), Math.min(n,4), 5, 12));
         painel.revalidate(); painel.repaint();
 
-        // Habilitar ações se for o turno certo
-        if (ehServidor && painel == painelJ1 && !jogador1Plantado) {
+        // Habilitar ações se for o painel do próprio jogador e ele ainda não plantou
+        boolean ehPainelPropio = (ehServidor && painel == painelJ1) || (!ehServidor && painel == painelJ2);
+        boolean jaPlantoui = ehServidor ? jogador1Plantado : jogador2Plantado;
+        String meuNome = ehServidor ? nomeJogador1 : nomeJogador2;
+
+        if (ehPainelPropio && !jaPlantoui) {
             btnPedirCarta.setEnabled(true);
             btnPlantar.setEnabled(true);
-            lblStatus.setText("Sua vez, " + nomeJogador1);
-        } else if (!ehServidor && painel == painelJ2 && !jogador2Plantado) {
-            btnPedirCarta.setEnabled(true);
-            btnPlantar.setEnabled(true);
-            lblStatus.setText("Sua vez, " + nomeJogador2);
+            lblStatus.setText("Sua vez, " + meuNome);
         }
     }
 
