@@ -95,6 +95,7 @@ public class Janela extends JFrame {
     // ── Iniciar servidor (hospedar) ────────────────────────────────────────────
     public void iniciarServidor(int portaDesejada) {
         try {
+            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
             servidorLocal = new Servidor(nomeJogador1);
             registro = LocateRegistry.createRegistry(portaDesejada == 0 ? Registry.REGISTRY_PORT : portaDesejada);
             porta = portaDesejada == 0 ? Registry.REGISTRY_PORT : portaDesejada;
