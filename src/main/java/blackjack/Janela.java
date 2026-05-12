@@ -217,11 +217,27 @@ public class Janela extends JFrame {
             if (j2P && !jogador2Plantado) { jogador2Plantado = true; verificarFimDePartida(); }
 
             // Chat
-            String msg = jogo.getUltimaMensagem();
-            if (msg != null) {
-                jogo.consumirMensagem();
-                areaMensagens.append(msg + "\n");
-                areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
+            String msg;
+            if (ehServidor) {
+                msg = jogo.getMensagemJogador1();
+                if (msg != null) {
+                    jogo.consumirMensagemJogador1();
+                    String meuPrefixo = nomeJogador1;
+                    if (!msg.startsWith(meuPrefixo)) {
+                        areaMensagens.append(msg + "\n");
+                        areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
+                    }
+                }
+            } else {
+                msg = jogo.getMensagemJogador2();
+                if (msg != null) {
+                    jogo.consumirMensagemJogador2();
+                    String meuPrefixo = nomeJogador2;
+                    if (!msg.startsWith(meuPrefixo)) {
+                        areaMensagens.append(msg + "\n");
+                        areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
+                    }
+                }
             }
 
         } catch (java.rmi.RemoteException ex) {

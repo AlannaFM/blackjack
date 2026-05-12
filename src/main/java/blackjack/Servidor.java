@@ -23,7 +23,8 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     // ultimos eventos pendentes de leitura pelo cliente
     private volatile String ultimaCartaJogador1;
     private volatile String ultimaCartaJogador2;
-    private volatile String ultimaMensagem;
+    private final java.util.Queue<String> filaMensagensJ1 = new java.util.LinkedList<>();
+    private final java.util.Queue<String> filaMensagensJ2 = new java.util.LinkedList<>();
 
     // ping
     private volatile long pingMs = 0;
@@ -47,7 +48,8 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         jogador2Plantado = false;
         ultimaCartaJogador1 = null;
         ultimaCartaJogador2 = null;
-        ultimaMensagem = null;
+        filaMensagensJ1.clear();
+        filaMensagensJ2.clear();
 
         TiposDeBaralho BaralhoTipo = TiposDeBaralho.buscarBaralho(nomeBaralho);
         gerenciador = new GerenciadorDeBaralhos(BaralhoTipo);
@@ -104,7 +106,9 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     @Override
     public synchronized void enviarMensagem(String remetente, String texto) throws RemoteException {
-        ultimaMensagem = remetente + ": " + texto;
+        String msg = remetente + ": " + texto;
+        filaMensagensJ1.add(msg);
+        filaMensagensJ2.add(msg);
     }
 
     @Override
@@ -129,7 +133,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     @Override
     public synchronized String getUltimaMensagem() throws RemoteException {
-        return ultimaMensagem;
+        return null; // não usar mais esse 
     }
 
     @Override
@@ -149,8 +153,9 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     @Override
     public synchronized void consumirMensagem() throws RemoteException {
-        ultimaMensagem = null;
+      //  filaMensagens.poll(); // remove apenas quando o cliente confirma leitura
     }
+    
 
     @Override
     public long getPing() throws RemoteException {
@@ -175,5 +180,21 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     public Partida getPartidaAtual() {
         return partidaAtual;
+    }
+    
+    public synchronized String getMensagemJogador1() throws RemoteException {
+        return filaMensagensJ1.peek();
+    }
+
+    public synchronized String getMensagemJogador2() throws RemoteException {
+        return filaMensagensJ2.peek();
+    }
+
+    public synchronized void consumirMensagemJogador1() throws RemoteException {
+        filaMensagensJ1.poll();
+    }
+
+    public synchronized void consumirMensagemJogador2() throws RemoteException {
+        filaMensagensJ2.poll();
     }
 }

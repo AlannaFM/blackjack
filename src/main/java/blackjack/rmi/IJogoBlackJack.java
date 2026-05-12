@@ -67,4 +67,12 @@ public interface IJogoBlackJack extends Remote {
 
     // Retorna o nome do jogador 2 (cliente), ou null se ainda não conectou.
     String getNomeJogador2() throws RemoteException;
+    
+    String getMensagemJogador1() throws RemoteException;
+    
+    String getMensagemJogador2() throws RemoteException;
+    
+    void consumirMensagemJogador1() throws RemoteException;
+    
+    void consumirMensagemJogador2() throws RemoteException;
 }
