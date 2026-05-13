@@ -1,6 +1,7 @@
 package blackjack;
 
 import blackjack.rmi.IJogoBlackJack;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.rmi.registry.LocateRegistry;
@@ -59,18 +60,33 @@ public class Janela extends JFrame {
     private JScrollPane scrollStatusConexao;
 
     public static Color laranjaEscuro = new Color(219, 124, 0);
-    public static Color verdeEscuro   = new Color(6, 166, 54);
+    public static Color verdeEscuro = new Color(6, 166, 54);
 
     // ── Getters/Setters usados pelos diálogos ─────────────────────────────────
-    public String getNomeJogador1() { return nomeJogador1; }
-    public void   setNomeJogador1(String n) {
+    public String getNomeJogador1() {
+        return nomeJogador1;
+    }
+
+    public void setNomeJogador1(String n) {
         nomeJogador1 = n;
         atualizarTituloPainel(contJ1, n);
     }
-    public String getIp()   { return ip; }
-    public void   setIp(String ip) { this.ip = ip; }
-    public int    getPorta(){ return porta; }
-    public void   setPorta(int p) { this.porta = p; }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPorta() {
+        return porta;
+    }
+
+    public void setPorta(int p) {
+        this.porta = p;
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     public Janela() {
@@ -121,13 +137,15 @@ public class Janela extends JFrame {
                         atualizarTituloPainel(contJ2, nomeJogador2);
                         conectadoComo(true);
                     }
-                } catch (Exception ex) { espera.stop(); resetarJanela(); }
+                } catch (Exception ex) {
+                    espera.stop();
+                    resetarJanela();
+                }
             });
             espera.start();
         } catch (Exception e) {
             resetarJanela();
-            JOptionPane.showMessageDialog(this,
-                    "Não foi possível criar a sala: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Não foi possível criar a sala: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -148,8 +166,7 @@ public class Janela extends JFrame {
             conectadoComo(false);
         } catch (Exception e) {
             resetarJanela();
-            JOptionPane.showMessageDialog(this,
-                    "Não foi possível conectar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Não foi possível conectar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -188,7 +205,7 @@ public class Janela extends JFrame {
             // Ping
             long inicio = System.currentTimeMillis();
             jogo.pong();
-            int ping = (int)(System.currentTimeMillis() - inicio);
+            int ping = (int) (System.currentTimeMillis() - inicio);
             atualizarPing(ping);
 
             // Nova partida iniciada pelo servidor: cliente detecta via polling
@@ -202,13 +219,10 @@ public class Janela extends JFrame {
             // ── Carta para J1 ────────────────────────────────────────────────
             String cartaJ1 = jogo.getUltimaCartaJogador1();
             if (cartaJ1 != null) {
+                jogo.consumirCartaJogador1();
                 if (ehServidor) {
-                    // Servidor já exibiu a carta inicial localmente em novaPartida()
-                    // ou localmente em pedirCarta(); apenas consome da fila
-                    jogo.consumirCartaJogador1();
+                    adicionarCartaAoPainel(painelJ1, cartaJ1, partidaAtual.getJogador1(), true);
                 } else {
-                    // Cliente recebe a carta do adversário (J1 = servidor) e exibe virada para cima
-                    jogo.consumirCartaJogador1();
                     adicionarCartaAoPainel(painelJ1, cartaJ1, partidaAtual.getJogador1(), true);
                 }
             }
@@ -216,21 +230,25 @@ public class Janela extends JFrame {
             // ── Carta para J2 ────────────────────────────────────────────────
             String cartaJ2 = jogo.getUltimaCartaJogador2();
             if (cartaJ2 != null) {
+                jogo.consumirCartaJogador2();
                 if (ehServidor) {
-                    // Servidor recebe a carta do adversário (J2 = cliente) e exibe virada para baixo
-                    jogo.consumirCartaJogador2();
                     adicionarCartaAoPainel(painelJ2, cartaJ2, partidaAtual.getJogador2(), false);
                 } else {
-                    // Cliente já exibiu a própria carta localmente em pedirCarta(); apenas consome
-                    jogo.consumirCartaJogador2();
+                    adicionarCartaAoPainel(painelJ2, cartaJ2, partidaAtual.getJogador2(), true);
                 }
             }
 
             // ── Plantadas ────────────────────────────────────────────────────
             boolean j1P = jogo.isJogador1Plantado();
             boolean j2P = jogo.isJogador2Plantado();
-            if (j1P && !jogador1Plantado) { jogador1Plantado = true; verificarFimDePartida(); }
-            if (j2P && !jogador2Plantado) { jogador2Plantado = true; verificarFimDePartida(); }
+            if (j1P && !jogador1Plantado) {
+                jogador1Plantado = true;
+                verificarFimDePartida();
+            }
+            if (j2P && !jogador2Plantado) {
+                jogador2Plantado = true;
+                verificarFimDePartida();
+            }
 
             // ── Chat ─────────────────────────────────────────────────────────
             String msg;
@@ -277,17 +295,18 @@ public class Janela extends JFrame {
         TiposDeBaralho tipo = TiposDeBaralho.buscarBaralho(nomeBaralho);
         gerenciador = new GerenciadorDeBaralhos(tipo);
         if ("BlackJack".equals(nomeBaralho)) {
-            partidaAtual = new Partida(new JogadorBlackJack(nomeJogador1),
-                    new JogadorBlackJack(nomeJogador2), tipo.getLimite());
+            partidaAtual = new Partida(new JogadorBlackJack(nomeJogador1), new JogadorBlackJack(nomeJogador2), tipo.getLimite());
         } else {
-            partidaAtual = new Partida(new Jogador(nomeJogador1),
-                    new Jogador(nomeJogador2), tipo.getLimite());
+            partidaAtual = new Partida(new Jogador(nomeJogador1), new Jogador(nomeJogador2), tipo.getLimite());
         }
         cartasViradasJ1 = new boolean[tipo.totalDeCartas()];
         cartasViradasJ2 = new boolean[tipo.totalDeCartas()];
-        painelJ1.removeAll(); painelJ2.removeAll();
-        painelJ1.revalidate(); painelJ1.repaint();
-        painelJ2.revalidate(); painelJ2.repaint();
+        painelJ1.removeAll();
+        painelJ2.removeAll();
+        painelJ1.revalidate();
+        painelJ1.repaint();
+        painelJ2.revalidate();
+        painelJ2.repaint();
         if (!ehServidor) {
             btnPedirCarta.setEnabled(false);
             btnPlantar.setEnabled(false);
@@ -318,14 +337,25 @@ public class Janela extends JFrame {
         final String camReverso = caminhoReverso;
 
         lblCarta.addMouseListener(new MouseAdapter() {
-            @Override public void mouseReleased(MouseEvent e) { virarCarta(lblCarta, camVisivel, camReverso); }
-            @Override public void mouseEntered(MouseEvent e)  { lblCarta.setLocation(lblCarta.getX()-2, lblCarta.getY()-2); }
-            @Override public void mouseExited(MouseEvent e)   { lblCarta.setLocation(lblCarta.getX()+2, lblCarta.getY()+2); }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                virarCarta(lblCarta, camVisivel, camReverso);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                lblCarta.setLocation(lblCarta.getX() - 2, lblCarta.getY() - 2);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                lblCarta.setLocation(lblCarta.getX() + 2, lblCarta.getY() + 2);
+            }
         });
 
         painel.add(lblCarta);
         int n = painel.getComponentCount();
-        painel.setLayout(new GridLayout((n/4)+((n%4!=0)?1:0), Math.min(n,4), 5, 12));
+        painel.setLayout(new GridLayout((n / 4) + ((n % 4 != 0) ? 1 : 0), Math.min(n, 4), 5, 12));
         painel.revalidate();
         painel.repaint();
 
@@ -381,22 +411,8 @@ public class Janela extends JFrame {
             String nomeBaralho = (String) comboBaralho.getSelectedItem();
             jogo.novaPartida(nomeBaralho);
             iniciarPartidaLocal(nomeBaralho);
-
-            // Servidor exibe as cartas iniciais localmente SEM consumir da fila,
-            // para que o cliente ainda possa lê-las via polling
-            String c1 = jogo.getUltimaCartaJogador1();
-            if (c1 != null) {
-                adicionarCartaAoPainel(painelJ1, c1, partidaAtual.getJogador1(), true);
-                // NÃO consome — o cliente precisa ler via polling
-            }
-            String c2 = jogo.getUltimaCartaJogador2();
-            if (c2 != null) {
-                adicionarCartaAoPainel(painelJ2, c2, partidaAtual.getJogador2(), false);
-                // NÃO consome — o cliente precisa ler via polling
-            }
-
             btnNovaPartida.setEnabled(false);
-            lblStatus.setText("Partida iniciada! Sua vez, " + nomeJogador1);
+            lblStatus.setText("Partida iniciada! Aguardando cartas...");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao iniciar partida: " + e.getMessage());
         }
@@ -427,8 +443,13 @@ public class Janela extends JFrame {
 
     private void plantar() {
         try {
-            if (ehServidor) { jogo.plantarJogador1(); jogador1Plantado = true; }
-            else             { jogo.plantarJogador2(); jogador2Plantado = true; }
+            if (ehServidor) {
+                jogo.plantarJogador1();
+                jogador1Plantado = true;
+            } else {
+                jogo.plantarJogador2();
+                jogador2Plantado = true;
+            }
             btnPedirCarta.setEnabled(false);
             btnPlantar.setEnabled(false);
             lblStatus.setText("Você se plantou. Aguardando adversário...");
@@ -443,8 +464,7 @@ public class Janela extends JFrame {
         if (texto.isEmpty()) return;
         try {
             String remetente = ehServidor ? nomeJogador1 : nomeJogador2;
-            String hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":"
-                    + String.format("%02d", Calendar.getInstance().get(Calendar.MINUTE));
+            String hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + String.format("%02d", Calendar.getInstance().get(Calendar.MINUTE));
             jogo.enviarMensagem(remetente + " (" + hora + ")", texto);
             areaMensagens.append(remetente + " (" + hora + "): " + texto + "\n");
             areaMensagens.setCaretPosition(areaMensagens.getDocument().getLength());
@@ -455,9 +475,15 @@ public class Janela extends JFrame {
     // ── Desconexão / reset ────────────────────────────────────────────────────
     private void desconectar() {
         if (timerPolling != null) timerPolling.stop();
-        try { if (registro != null) UnicastRemoteObject.unexportObject(servidorLocal, true); } catch (Exception ignore) {}
-        jogo = null; servidorLocal = null; registro = null;
-        partidaAtual = null; gerenciador = null;
+        try {
+            if (registro != null) UnicastRemoteObject.unexportObject(servidorLocal, true);
+        } catch (Exception ignore) {
+        }
+        jogo = null;
+        servidorLocal = null;
+        registro = null;
+        partidaAtual = null;
+        gerenciador = null;
         resetarJanela();
         setStatusConexao(Color.RED, "Desconectado");
     }
@@ -466,15 +492,21 @@ public class Janela extends JFrame {
         SwingUtilities.invokeLater(() -> {
             lblPing.setText("");
             lblPartidas.setText("");
-            btnCriarSala.setEnabled(true); btnCriarSala.setText("Criar Sala");
-            btnEntrar.setEnabled(true);    btnEntrar.setText("Entrar");
+            btnCriarSala.setEnabled(true);
+            btnCriarSala.setText("Criar Sala");
+            btnEntrar.setEnabled(true);
+            btnEntrar.setText("Entrar");
             btnNovaPartida.setEnabled(false);
             btnPedirCarta.setEnabled(false);
             btnPlantar.setEnabled(false);
             txtMensagem.setEnabled(false);
             btnEnviar.setEnabled(false);
-            painelJ1.removeAll(); painelJ1.revalidate(); painelJ1.repaint();
-            painelJ2.removeAll(); painelJ2.revalidate(); painelJ2.repaint();
+            painelJ1.removeAll();
+            painelJ1.revalidate();
+            painelJ1.repaint();
+            painelJ2.removeAll();
+            painelJ2.revalidate();
+            painelJ2.repaint();
             comboBaralho.setEnabled(true);
             partidaAtual = null;
         });
@@ -507,7 +539,7 @@ public class Janela extends JFrame {
         topo.add(comboBaralho);
 
         btnCriarSala = new JButton("Criar Sala");
-        btnEntrar    = new JButton("Entrar");
+        btnEntrar = new JButton("Entrar");
         btnCriarSala.addActionListener(e -> {
             if ("Criar Sala".equals(btnCriarSala.getText())) new CriarSala(this, true).setVisible(true);
             else desconectar();
@@ -523,7 +555,7 @@ public class Janela extends JFrame {
         topo.add(lblPing);
 
         scrollStatusConexao = new JScrollPane();
-        txtStatusConexao    = new JTextPane();
+        txtStatusConexao = new JTextPane();
         txtStatusConexao.setEditable(false);
         txtStatusConexao.setFocusable(false);
         txtStatusConexao.setPreferredSize(new Dimension(260, 36));
@@ -557,31 +589,31 @@ public class Janela extends JFrame {
         JScrollPane scrollChat = new JScrollPane(areaMensagens);
 
         txtMensagem = new JTextField(16);
-        btnEnviar   = new JButton("Enviar");
+        btnEnviar = new JButton("Enviar");
         txtMensagem.addActionListener(e -> enviarMensagem());
-        btnEnviar.addActionListener(e   -> enviarMensagem());
+        btnEnviar.addActionListener(e -> enviarMensagem());
         JPanel linhaMensagem = new JPanel(new BorderLayout(4, 0));
         linhaMensagem.add(txtMensagem, BorderLayout.CENTER);
-        linhaMensagem.add(btnEnviar,   BorderLayout.EAST);
+        linhaMensagem.add(btnEnviar, BorderLayout.EAST);
 
         JPanel painelChat = new JPanel(new BorderLayout(4, 4));
-        painelChat.add(scrollChat,    BorderLayout.CENTER);
+        painelChat.add(scrollChat, BorderLayout.CENTER);
         painelChat.add(linhaMensagem, BorderLayout.SOUTH);
 
         JPanel centro = new JPanel(new BorderLayout(6, 0));
-        centro.add(mesas,      BorderLayout.CENTER);
+        centro.add(mesas, BorderLayout.CENTER);
         centro.add(painelChat, BorderLayout.EAST);
         add(centro, BorderLayout.CENTER);
 
         // Rodapé – ações de jogo
-        lblStatus   = new JLabel("Em espera");
+        lblStatus = new JLabel("Em espera");
         lblPartidas = new JLabel();
         btnNovaPartida = new JButton("Nova Partida");
-        btnPedirCarta  = new JButton("Pedir Carta");
-        btnPlantar     = new JButton("Plantar");
+        btnPedirCarta = new JButton("Pedir Carta");
+        btnPlantar = new JButton("Plantar");
         btnNovaPartida.addActionListener(e -> novaPartida());
-        btnPedirCarta.addActionListener(e  -> pedirCarta());
-        btnPlantar.addActionListener(e     -> plantar());
+        btnPedirCarta.addActionListener(e -> pedirCarta());
+        btnPlantar.addActionListener(e -> plantar());
 
         JPanel rodape = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
         rodape.add(btnNovaPartida);
@@ -595,7 +627,9 @@ public class Janela extends JFrame {
         setMinimumSize(new Dimension(820, 400));
     }
 
-    /** Cria um painel contenedor de jogador com ScrollPane e PainelRolavel. */
+    /**
+     * Cria um painel contenedor de jogador com ScrollPane e PainelRolavel.
+     */
     private JPanel criarPainelJogador(String titulo, Color fundo) {
         PainelRolavel pr = new PainelRolavel();
         pr.setBackground(fundo);
@@ -622,7 +656,8 @@ public class Janela extends JFrame {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         SwingUtilities.invokeLater(Janela::new);
     }
 }
