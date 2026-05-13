@@ -208,6 +208,7 @@ public class Janela extends JFrame {
             int ping = (int) (System.currentTimeMillis() - inicio);
             atualizarPing(ping);
             
+            // Chat (funciona mesmo sem partida ativa) ─────────────────────────
             String msg;
             if (ehServidor) {
                 msg = jogo.getMensagemJogador1();
@@ -274,7 +275,6 @@ public class Janela extends JFrame {
             }
 
             // ── Chat ─────────────────────────────────────────────────────────
-
         } catch (java.rmi.RemoteException ex) {
             timerPolling.stop();
             resetarJanela();
