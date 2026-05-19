@@ -404,7 +404,7 @@ public class Janela extends JFrame {
         lblPing.setForeground(ms < 100 ? verdeEscuro : ms < 200 ? laranjaEscuro : Color.RED);
         lblPing.setText("Ping: " + ms + " ms");
     }
-
+//teste
     // ── Ações dos botões ─────────────────────────────────────────────────────
     private void novaPartida() {
         if (!ehServidor) return;
