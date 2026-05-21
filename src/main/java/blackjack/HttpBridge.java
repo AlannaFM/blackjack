@@ -18,10 +18,9 @@ import java.util.concurrent.Executors;
  * <p>O Angular (ou qualquer cliente HTTP) faz requisições para esta bridge;
  * ela repassa as chamadas ao objeto RMI local e devolve JSON.</p>
  *
- * <h3>Endpoints (todos via GET ou POST):</h3>
+ * <h3>Endpoints:</h3>
  * <pre>
  *  GET  /estado            → getEstadoPartida()
- *  GET  /baralhos          → getBaralhosDisponiveis()
  *  GET  /ping              → getPing()
  *  GET  /jogador2          → getNomeJogador2()
  *  GET  /carta/jogador1    → getUltimaCartaJogador1()
@@ -30,7 +29,7 @@ import java.util.concurrent.Executors;
  *  GET  /mensagem/jogador2 → getMensagemJogador2()
  *
  *  POST /entrar            → entrarNaSala(nome)
- *  POST /nova-partida      → novaPartida(baralho)
+ *  POST /nova-partida      → novaPartida()
  *  POST /pedir/jogador1    → pedirCartaJogador1()
  *  POST /pedir/jogador2    → pedirCartaJogador2()
  *  POST /plantar/jogador1  → plantarJogador1()
@@ -43,7 +42,7 @@ import java.util.concurrent.Executors;
  *  POST /pong              → pong()
  * </pre>
  *
- * <p>Todos os parâmetros são enviados no body como {@code application/x-www-form-urlencoded}
+ * <p>Parâmetros enviados no body como {@code application/x-www-form-urlencoded}
  * ou como query string.</p>
  */
 public class HttpBridge {
@@ -63,7 +62,6 @@ public class HttpBridge {
 
         // GETs
         httpServer.createContext("/estado",            ex -> handle(ex, this::handleEstado));
-        httpServer.createContext("/baralhos",          ex -> handle(ex, this::handleBaralhos));
         httpServer.createContext("/ping",              ex -> handle(ex, this::handleGetPing));
         httpServer.createContext("/jogador2",          ex -> handle(ex, this::handleGetJogador2));
         httpServer.createContext("/carta/jogador1",    ex -> handle(ex, this::handleGetCartaJ1));
@@ -101,7 +99,6 @@ public class HttpBridge {
     }
 
     private void handle(HttpExchange ex, Handler h) {
-        // CORS para desenvolvimento Angular (ng serve roda em localhost:4200)
         ex.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         ex.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         ex.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
@@ -125,17 +122,6 @@ public class HttpBridge {
 
     private String handleEstado(HttpExchange ex) throws RemoteException {
         return servidor.getEstadoPartida();
-    }
-
-    private String handleBaralhos(HttpExchange ex) throws RemoteException {
-        String[] nomes = servidor.getBaralhosDisponiveis().split(",");
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < nomes.length; i++) {
-            if (i > 0) sb.append(",");
-            sb.append("\"").append(escapar(nomes[i])).append("\"");
-        }
-        sb.append("]");
-        return sb.toString();
     }
 
     private String handleGetPing(HttpExchange ex) throws RemoteException {
@@ -179,11 +165,7 @@ public class HttpBridge {
     }
 
     private String handleNovaPartida(HttpExchange ex) throws Exception {
-        Map<String, String> params = lerParams(ex);
-        String baralho = params.get("baralho");
-        if (baralho == null || baralho.isBlank())
-            throw new IllegalArgumentException("Parâmetro 'baralho' obrigatório.");
-        servidor.novaPartida(baralho);
+        servidor.novaPartida();
         return "{\"ok\":true}";
     }
 
@@ -246,7 +228,6 @@ public class HttpBridge {
 
     private Map<String, String> lerParams(HttpExchange ex) throws IOException {
         String body = new String(ex.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        // Tenta também query string (útil para testes via browser)
         String query = ex.getRequestURI().getQuery();
         if (query != null && !query.isBlank()) {
             body = body.isBlank() ? query : body + "&" + query;

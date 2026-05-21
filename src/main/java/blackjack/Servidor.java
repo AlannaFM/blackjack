@@ -11,24 +11,21 @@ import java.util.StringJoiner;
 /**
  * Implementação RMI do servidor de BlackJack.
  *
- * Todo o estado da partida é mantido aqui. O cliente Angular consulta
- * via polling usando o HTTP Bridge (@link HttpBridge), que repassa as
- * chamadas para este objeto RMI.
- *
- *
+ * <p>Todo o estado da partida é mantido aqui. O cliente Angular consulta
+ * via polling usando o {@link HttpBridge}, que repassa as chamadas para
+ * este objeto RMI.</p>
  */
 public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     // ── Jogadores ────────────────────────────────────────────────────────────
 
-    private final String nomeJogador1;
-    private volatile String nomeJogador2;
+    private final String          nomeJogador1;
+    private volatile String       nomeJogador2;
 
     // ── Estado da partida ────────────────────────────────────────────────────
 
     private GerenciadorDeBaralhos gerenciador;
     private Partida               partidaAtual;
-    private String                nomeBaralho;
 
     private volatile boolean jogador1Plantado;
     private volatile boolean jogador2Plantado;
@@ -65,8 +62,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     // ── Controle de partida ───────────────────────────────────────────────────
 
     @Override
-    public synchronized void novaPartida(String nomeBaralho) throws RemoteException {
-        this.nomeBaralho    = nomeBaralho;
+    public synchronized void novaPartida() throws RemoteException {
         jogador1Plantado    = false;
         jogador2Plantado    = false;
         ultimaCartaJogador1 = null;
@@ -74,20 +70,12 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         filaMensagensJ1.clear();
         filaMensagensJ2.clear();
 
-        TiposDeBaralho tipo = TiposDeBaralho.buscarBaralho(nomeBaralho);
-        if (tipo == null) throw new RemoteException("Baralho desconhecido: " + nomeBaralho);
+        gerenciador = new GerenciadorDeBaralhos();
 
-        gerenciador = new GerenciadorDeBaralhos(tipo);
+        JogadorBlackJack j1 = new JogadorBlackJack(nomeJogador1);
+        JogadorBlackJack j2 = new JogadorBlackJack(nomeJogador2 != null ? nomeJogador2 : "Jogador 2");
 
-        Jogador j1, j2;
-        if ("BlackJack".equals(nomeBaralho)) {
-            j1 = new JogadorBlackJack(nomeJogador1);
-            j2 = new JogadorBlackJack(nomeJogador2 != null ? nomeJogador2 : "Jogador 2");
-        } else {
-            j1 = new Jogador(nomeJogador1);
-            j2 = new Jogador(nomeJogador2 != null ? nomeJogador2 : "Jogador 2");
-        }
-        partidaAtual = new Partida(j1, j2, tipo.getLimite());
+        partidaAtual = new Partida(j1, j2, TiposDeBaralho.LIMITE);
 
         // Carta inicial para cada jogador
         Carta c1 = gerenciador.cartaAleatoria(j1, j2);
@@ -98,7 +86,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         j2.darCarta(c2);
         ultimaCartaJogador2 = c2.getImagem();
 
-        System.out.println("[RMI] Nova partida iniciada: " + nomeBaralho);
+        System.out.println("[RMI] Nova partida iniciada.");
     }
 
     // ── Ações dos jogadores ───────────────────────────────────────────────────
@@ -145,24 +133,16 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     // ── Polling – cartas ──────────────────────────────────────────────────────
 
     @Override
-    public synchronized String getUltimaCartaJogador1() throws RemoteException {
-        return ultimaCartaJogador1;
-    }
+    public synchronized String getUltimaCartaJogador1() throws RemoteException { return ultimaCartaJogador1; }
 
     @Override
-    public synchronized String getUltimaCartaJogador2() throws RemoteException {
-        return ultimaCartaJogador2;
-    }
+    public synchronized String getUltimaCartaJogador2() throws RemoteException { return ultimaCartaJogador2; }
 
     @Override
-    public synchronized void consumirCartaJogador1() throws RemoteException {
-        ultimaCartaJogador1 = null;
-    }
+    public synchronized void consumirCartaJogador1() throws RemoteException { ultimaCartaJogador1 = null; }
 
     @Override
-    public synchronized void consumirCartaJogador2() throws RemoteException {
-        ultimaCartaJogador2 = null;
-    }
+    public synchronized void consumirCartaJogador2() throws RemoteException { ultimaCartaJogador2 = null; }
 
     // ── Polling – estado ──────────────────────────────────────────────────────
 
@@ -173,32 +153,21 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     public synchronized boolean isJogador2Plantado() throws RemoteException { return jogador2Plantado; }
 
     @Override
-    public synchronized String getNomeBaralho() throws RemoteException { return nomeBaralho; }
-
-    @Override
     public synchronized String getNomeJogador2() throws RemoteException { return nomeJogador2; }
 
     // ── Polling – mensagens ───────────────────────────────────────────────────
 
     @Override
-    public synchronized String getMensagemJogador1() throws RemoteException {
-        return filaMensagensJ1.peek();
-    }
+    public synchronized String getMensagemJogador1() throws RemoteException { return filaMensagensJ1.peek(); }
 
     @Override
-    public synchronized String getMensagemJogador2() throws RemoteException {
-        return filaMensagensJ2.peek();
-    }
+    public synchronized String getMensagemJogador2() throws RemoteException { return filaMensagensJ2.peek(); }
 
     @Override
-    public synchronized void consumirMensagemJogador1() throws RemoteException {
-        filaMensagensJ1.poll();
-    }
+    public synchronized void consumirMensagemJogador1() throws RemoteException { filaMensagensJ1.poll(); }
 
     @Override
-    public synchronized void consumirMensagemJogador2() throws RemoteException {
-        filaMensagensJ2.poll();
-    }
+    public synchronized void consumirMensagemJogador2() throws RemoteException { filaMensagensJ2.poll(); }
 
     /** @deprecated Mantido por compatibilidade; use getMensagemJogador1/2. */
     @Override
@@ -221,15 +190,10 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         tempoPing = System.currentTimeMillis();
     }
 
-    /** Chamado internamente para iniciar a medição de ping. */
     public void iniciarPing() { tempoPing = System.currentTimeMillis(); }
 
     // ── Estado completo (JSON para o Angular) ─────────────────────────────────
 
-    /**
-     * Retorna um JSON simples com o estado atual da partida.
-     * Evita dependência de bibliotecas externas (Jackson etc.) no servidor.
-     */
     @Override
     public synchronized String getEstadoPartida() throws RemoteException {
         if (partidaAtual == null) {
@@ -246,27 +210,22 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         }
 
         return "{"
-                + "\"baralho\":\"" + escapar(nomeBaralho) + "\","
-                + "\"limite\":" + partidaAtual.getLimite() + ","
+                + "\"baralho\":\"" + TiposDeBaralho.NOME + "\","
+                + "\"limite\":"   + TiposDeBaralho.LIMITE + ","
                 + "\"jogador1\":{"
-                +   "\"nome\":\"" + escapar(j1.getNome()) + "\","
-                +   "\"pontos\":" + j1.somaCartas() + ","
-                +   "\"plantado\":" + jogador1Plantado + ","
-                +   "\"cartas\":" + cartasParaJson(j1)
+                +   "\"nome\":\""   + escapar(j1.getNome()) + "\","
+                +   "\"pontos\":"   + j1.somaCartas()       + ","
+                +   "\"plantado\":" + jogador1Plantado       + ","
+                +   "\"cartas\":"   + cartasParaJson(j1)
                 + "},"
                 + "\"jogador2\":{"
-                +   "\"nome\":\"" + escapar(j2.getNome()) + "\","
-                +   "\"pontos\":" + j2.somaCartas() + ","
-                +   "\"plantado\":" + jogador2Plantado + ","
-                +   "\"cartas\":" + cartasParaJson(j2)
+                +   "\"nome\":\""   + escapar(j2.getNome()) + "\","
+                +   "\"pontos\":"   + j2.somaCartas()       + ","
+                +   "\"plantado\":" + jogador2Plantado       + ","
+                +   "\"cartas\":"   + cartasParaJson(j2)
                 + "},"
-                + "\"vencedor\":" + vencedor
+                + "\"vencedor\":"  + vencedor
                 + "}";
-    }
-
-    @Override
-    public String getBaralhosDisponiveis() throws RemoteException {
-        return String.join(",", TiposDeBaralho.nomesBaralho());
     }
 
     // ── Acesso interno ────────────────────────────────────────────────────────

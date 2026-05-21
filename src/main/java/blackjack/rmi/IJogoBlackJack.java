@@ -4,21 +4,21 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Interface remota RMI do jogo.
- * Expõe todas as ações que o cliente (Angular) pode invocar no servidor via HTTP Bridge ou RMI direto.
+ * Interface remota RMI do jogo BlackJack.
+ * Expõe todas as ações que o cliente pode invocar no servidor via HTTP Bridge ou RMI direto.
  */
 public interface IJogoBlackJack extends Remote {
 
     /** Registra o jogador 2 (cliente) e retorna o nome do jogador 1 (host). */
     String entrarNaSala(String nomeJogador2) throws RemoteException;
 
-    /** Inicia uma nova partida com o baralho indicado. Só o host pode chamar. */
-    void novaPartida(String nomeBaralho) throws RemoteException;
+    /** Inicia uma nova partida com o baralho padrão de BlackJack. */
+    void novaPartida() throws RemoteException;
 
-    /** Jogador 1 pede uma carta; retorna o nome do arquivo de imagem sorteado. */
+    /** Jogador 1 pede uma carta; retorna o caminho da imagem sorteada. */
     String pedirCartaJogador1() throws RemoteException;
 
-    /** Jogador 2 pede uma carta; retorna o nome do arquivo de imagem sorteado. */
+    /** Jogador 2 pede uma carta; retorna o caminho da imagem sorteada. */
     String pedirCartaJogador2() throws RemoteException;
 
     /** Jogador 1 se planta. */
@@ -44,11 +44,8 @@ public interface IJogoBlackJack extends Remote {
     /** Retorna true se o jogador 2 está plantado. */
     boolean isJogador2Plantado() throws RemoteException;
 
-    /** Retorna a última mensagem de chat (legado – não utilizar). */
+    /** @deprecated Legado – não utilizar. */
     String getUltimaMensagem() throws RemoteException;
-
-    /** Retorna o nome do baralho da partida em andamento, ou null. */
-    String getNomeBaralho() throws RemoteException;
 
     /** Consome (limpa) a última carta do jogador 1 após leitura. */
     void consumirCartaJogador1() throws RemoteException;
@@ -56,7 +53,7 @@ public interface IJogoBlackJack extends Remote {
     /** Consome (limpa) a última carta do jogador 2 após leitura. */
     void consumirCartaJogador2() throws RemoteException;
 
-    /** Consome a última mensagem geral (legado). */
+    /** @deprecated Legado. */
     void consumirMensagem() throws RemoteException;
 
     /** Retorna o ping atual em ms calculado pelo servidor. */
@@ -82,11 +79,6 @@ public interface IJogoBlackJack extends Remote {
     /** Remove a mensagem lida da fila do jogador 2. */
     void consumirMensagemJogador2() throws RemoteException;
 
-    // ── Estado completo da partida (para o Angular) ──────────────────────────
-
     /** Retorna um snapshot JSON do estado atual da partida. */
     String getEstadoPartida() throws RemoteException;
-
-    /** Retorna os nomes dos baralhos disponíveis separados por vírgula. */
-    String getBaralhosDisponiveis() throws RemoteException;
 }
