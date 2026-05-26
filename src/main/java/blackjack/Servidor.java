@@ -46,7 +46,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     // ─────────────────────────────────────────────────────────────────────────
 
     public Servidor(String nomeJogador1) throws RemoteException {
-        super();
+    	super(1098); // ou qualquer porta fixa
         this.nomeJogador1 = nomeJogador1;
     }
 

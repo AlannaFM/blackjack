@@ -41,6 +41,7 @@ public class Main {
         int httpPort = args.length > 2 ? Integer.parseInt(args[2]) : HTTP_PORT_DEFAULT;
 
         // ── RMI ──────────────────────────────────────────────────────────────
+        System.setProperty("java.rmi.server.hostname", "SEU_IP_LOCAL_OU_PUBLICO"); //p configurar o ip e nn cair em localhost
         Servidor servidor = new Servidor(nomeJogador1);
 
         Registry registry = LocateRegistry.createRegistry(rmiPort);
