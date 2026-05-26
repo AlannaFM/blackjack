@@ -2,30 +2,24 @@ package blackjack;
 
 import java.util.ArrayList;
 
-//Gerencia a baralho do jogo, fornecendo cartas aleatórias
-
+/**
+ * gerencia o baralho padrão de BlackJack (52 cartas)
+ *
+ * fornece sorteio sem repetição entre as cartas já distribuídas
+ */
 public class GerenciadorDeBaralhos extends ArrayList<Carta> {
 
-    private final TiposDeBaralho baralho;
-
-    public GerenciadorDeBaralhos(TiposDeBaralho baralho) {
-        this.baralho = baralho;
+    public GerenciadorDeBaralhos() {
         inicializarCartas();
     }
 
-    public TiposDeBaralho getbaralho() { return baralho; }
-
     private void inicializarCartas() {
-        int total = baralho.totalDeCartas();
-        Float[] valores = baralho.getValores();
-        String[] imagens = baralho.getImagensCartas();
-        int v = valores.length;
-        for (int i = 0; i < total; i++) {
-            for (int j = 0; j < v; j++) {
-                if (this.size() >= total) break;
-                this.add(new Carta(imagens[i + j], valores[j]));
-            }
-            i += v - 1;
+        String[] imagens = TiposDeBaralho.getImagensCartas();
+        float[]  valores = TiposDeBaralho.getValores();
+        int naipeSize    = valores.length; // 13
+
+        for (int i = 0; i < imagens.length; i++) {
+            this.add(new Carta(imagens[i], valores[i % naipeSize]));
         }
     }
 
@@ -35,8 +29,10 @@ public class GerenciadorDeBaralhos extends ArrayList<Carta> {
         return null;
     }
 
+    // sorteia uma carta que ainda não está na mão de nenhum dos jogadores
+
     public Carta cartaAleatoria(Jogador j1, Jogador j2) {
-        int total = baralho.totalDeCartas();
+        int total = TiposDeBaralho.totalDeCartas();
         ArrayList<Carta> emJogo = new ArrayList<>();
         if (j1.getCartas() != null)
             for (Carta c : j1.getCartas()) emJogo.add(c);

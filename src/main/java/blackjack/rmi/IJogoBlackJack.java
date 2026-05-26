@@ -4,75 +4,81 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * interface remota RMI do jogo
- * expõe todas as ações que o cliente pode invocar no servidor
+ * Interface remota RMI do jogo BlackJack.
+ * Expõe todas as ações que o cliente pode invocar no servidor via HTTP Bridge ou RMI direto.
  */
 public interface IJogoBlackJack extends Remote {
 
-    // Registra o jogador 2 (cliente) e retorna o nome do jogador 1 (servidor).
+    /** Registra o jogador 2 (cliente) e retorna o nome do jogador 1 (host). */
     String entrarNaSala(String nomeJogador2) throws RemoteException;
 
-    // Inicia uma nova partida com a Baralho indicada. Só o servidor pode chamar.
-    void novaPartida(String nomeBaralho) throws RemoteException;
+    /** Inicia uma nova partida com o baralho padrão de BlackJack. */
+    void novaPartida() throws RemoteException;
 
-    // Jogador 1 pede uma carta; retorna a URL da imagem sorteada.
+    /** Jogador 1 pede uma carta; retorna o caminho da imagem sorteada. */
     String pedirCartaJogador1() throws RemoteException;
 
-    // Jogador 2 pede uma carta; retorna a URL da imagem sorteada.
+    /** Jogador 2 pede uma carta; retorna o caminho da imagem sorteada. */
     String pedirCartaJogador2() throws RemoteException;
 
-    // Jogador 1 se planta.
+    /** Jogador 1 se planta. */
     void plantarJogador1() throws RemoteException;
 
-    // Jogador 2 se planta.
+    /** Jogador 2 se planta. */
     void plantarJogador2() throws RemoteException;
 
-    // Envia uma mensagem de chat.
+    /** Envia uma mensagem de chat para ambos os jogadores. */
     void enviarMensagem(String remetente, String texto) throws RemoteException;
 
-    // ── Estado consultável pelo cliente via polling ──────────────────────────
+    // ── Estado consultável via polling ───────────────────────────────────────
 
-    // Retorna a URL da última carta dada ao jogador 1, ou null se não houver novidade.
+    /** Retorna a imagem da última carta do jogador 1 ainda não consumida, ou null. */
     String getUltimaCartaJogador1() throws RemoteException;
 
-    // Retorna a URL da última carta dada ao jogador 2, ou null se não houver novidade.
+    /** Retorna a imagem da última carta do jogador 2 ainda não consumida, ou null. */
     String getUltimaCartaJogador2() throws RemoteException;
 
-    // Retorna true se o jogador 1 está plantado.
+    /** Retorna true se o jogador 1 está plantado. */
     boolean isJogador1Plantado() throws RemoteException;
 
-    // Retorna true se o jogador 2 está plantado.
+    /** Retorna true se o jogador 2 está plantado. */
     boolean isJogador2Plantado() throws RemoteException;
 
-    // Retorna a última mensagem de chat recebida (formato "Remetente: texto") ou null.
+    /** @deprecated Legado – não utilizar. */
     String getUltimaMensagem() throws RemoteException;
 
-    // Retorna o nome da Baralho da partida em andamento, ou null se sem partida.
-    String getNomeBaralho() throws RemoteException;
- 
-    // Limpa a última carta do jogador 1 após o cliente ter lido.
+    /** Consome (limpa) a última carta do jogador 1 após leitura. */
     void consumirCartaJogador1() throws RemoteException;
 
-    // Limpa a última carta do jogador 2 após o cliente ter lido.
+    /** Consome (limpa) a última carta do jogador 2 após leitura. */
     void consumirCartaJogador2() throws RemoteException;
 
-    // Limpa a última mensagem após o cliente ter lido.
+    /** @deprecated Legado. */
     void consumirMensagem() throws RemoteException;
 
-    // Retorna o ping em ms calculado pelo servidor.
+    /** Retorna o ping atual em ms calculado pelo servidor. */
     long getPing() throws RemoteException;
 
-    // Chamado pelo cliente para medir o ping (round-trip).
+    /** Chamado pelo cliente para fechar o round-trip de ping. */
     void pong() throws RemoteException;
 
-    // Retorna o nome do jogador 2 (cliente), ou null se ainda não conectou.
+    /** Retorna o nome do jogador 2, ou null se ainda não conectou. */
     String getNomeJogador2() throws RemoteException;
-    
+
+    // ── Fila de mensagens de chat por jogador ────────────────────────────────
+
+    /** Retorna a próxima mensagem pendente para o jogador 1, sem remover. */
     String getMensagemJogador1() throws RemoteException;
-    
+
+    /** Retorna a próxima mensagem pendente para o jogador 2, sem remover. */
     String getMensagemJogador2() throws RemoteException;
-    
+
+    /** Remove a mensagem lida da fila do jogador 1. */
     void consumirMensagemJogador1() throws RemoteException;
-    
+
+    /** Remove a mensagem lida da fila do jogador 2. */
     void consumirMensagemJogador2() throws RemoteException;
+
+    /** Retorna um snapshot JSON do estado atual da partida. */
+    String getEstadoPartida() throws RemoteException;
 }
