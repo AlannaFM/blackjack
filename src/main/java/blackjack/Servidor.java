@@ -55,6 +55,14 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     @Override
     public synchronized String entrarNaSala(String nomeJogador2) throws RemoteException {
         this.nomeJogador2 = nomeJogador2;
+        // reseta partida anterior quando novo jogador entra
+        this.partidaAtual = null;
+        this.jogador1Plantado = false;
+        this.jogador2Plantado = false;
+        this.ultimaCartaJogador1 = null;
+        this.ultimaCartaJogador2 = null;
+        this.filaMensagensJ1.clear();
+        this.filaMensagensJ2.clear();
         System.out.println("[RMI] Jogador 2 entrou: " + nomeJogador2);
         return nomeJogador1;
     }
