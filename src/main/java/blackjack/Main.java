@@ -41,8 +41,24 @@ public class Main {
         int httpPort = args.length > 2 ? Integer.parseInt(args[2]) : HTTP_PORT_DEFAULT;
 
         // ── RMI ──────────────────────────────────────────────────────────────
-        System.setProperty("java.rmi.server.hostname", "SEU_IP_LOCAL_OU_PUBLICO"); //p configurar o ip e nn cair em localhost
+
+        private static String detectarIpLocal() {
+            try (java.net.DatagramSocket socket = new java.net.DatagramSocket()) {
+                socket.connect(java.net.InetAddress.getByName("8.8.8.8"), 80);
+                return socket.getLocalAddress().getHostAddress();
+            } catch (Exception e) {
+                return "127.0.0.1";
+            }
+        }
+
+        String rmiHostname = System.getenv("RMI_HOST");
+        if (rmiHostname == null || rmiHostname.isBlank()) {
+            rmiHostname = args.length > 3 ? args[3] : detectarIpLocal();
+        }
+        System.setProperty("java.rmi.server.hostname", rmiHostname);
+        System.out.println("RMI hostname: " + rmiHostname);
         Servidor servidor = new Servidor(nomeJogador1);
+
 
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         registry.rebind(NOME_RMI, servidor);
