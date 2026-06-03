@@ -58,7 +58,7 @@ public interface IJogoBlackJack extends Remote {
     // retorna o ping atual em ms calculado pelo servidor
     long getPing() throws RemoteException;
 
-    // chamado pelo cliente para fechar o round-trip de ping
+    // chamado pelo cliente para fechar o round-trip de ping (empo que um dado leva para ir do cliente ao servidor e voltar)
     void pong() throws RemoteException;
 
     // retorna o nome do jogador 2, ou null se ainda não conectou

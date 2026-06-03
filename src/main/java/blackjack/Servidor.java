@@ -11,7 +11,7 @@ import java.util.StringJoiner;
 
 //implementação RMI  que roda o servidor
 
- //Todo o estado da partida é mantido aqui. O cliente Angular consulta via polling usando o  HttpBridge, que repassa as chamadas paraeste objeto RMI
+ //Todo o estado da partida é mantido aqui. O cliente Angular consulta via polling usando o  HttpBridge, que repassa as chamadas para este objeto RMI
 public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
     // jogadores

@@ -6,22 +6,16 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
-/**
- * Ponto de entrada do servidor de BlackJack.
- *
- * <p>Inicia:</p>
- * <ol>
- *   <li>O RMI Registry na porta {@code RMI_PORT} (padrão 1099).</li>
- *   <li>O objeto {@link Servidor} registrado como {@code "BlackJackServidor"}.</li>
- *   <li>A {@link HttpBridge} na porta {@code HTTP_PORT} (padrão 8080),
- *       que permite ao Angular consumir a API via HTTP/JSON.</li>
- * </ol>
- *
- * <p>Uso:</p>
- * <pre>
- *   java -jar blackjack-backend.jar [nomeJogador1] [rmiPort] [httpPort]
- * </pre>
- */
+//Ponto de entrada do servidor de BlackJack.
+
+ //inicia:
+//O RMI Registry na portaRMI_PORT (padrão 1099)
+//O objeto Servidor registrado como BlackJackServidor
+//A HttpBridgena porta  HTTP_PORT (padrão 8080) que permite ao Angular consumir a API via HTTP/JSON
+
+//Uso:
+ //java -jar blackjack-backend.jar [nomeJogador1] [rmiPort] [httpPort]
+
 public class Main {
 
     //Nome com o qual o servidor é registrado no RMI Registry
@@ -41,9 +35,12 @@ public class Main {
         int httpPort = args.length > 2 ? Integer.parseInt(args[2]) : HTTP_PORT_DEFAULT;
 
         // RMI
+
+        //servidor registra o objeto
         System.setProperty("java.rmi.server.hostname", "SEU_IP_LOCAL_OU_PUBLICO"); //p configurar o ip e nn cair em localhost
         Servidor servidor = new Servidor(nomeJogador1);
 
+        //cria o registry
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         registry.rebind(NOME_RMI, servidor);
 
