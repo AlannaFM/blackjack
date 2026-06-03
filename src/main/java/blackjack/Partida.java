@@ -1,5 +1,7 @@
 package blackjack;
 
+//ncapsula os dois jogadores, o limite (21) e a lógica de decisão do vencedor
+
 public class Partida {
 
     private final Jogador jogador1;

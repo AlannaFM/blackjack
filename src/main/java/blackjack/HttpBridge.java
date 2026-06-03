@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
- * Bridge HTTP que expõe o servidor RMI ({@link Servidor}) como uma API REST/JSON.
+ * Bridge HTTP que expõe o servidor RMI Servidorcomo uma API REST/JSON
  *
- * <p>O Angular (ou qualquer cliente HTTP) faz requisições para esta bridge;
- * ela repassa as chamadas ao objeto RMI local e devolve JSON.</p>
+ * <p>O angular (ou qualquer cliente HTTP) faz requisições para esta bridge ee
+ * ela repassa as chamadas ao objeto RMI local e devolve JSON</p>
  *
- * <h3>Endpoints:</h3>
+ * <h3>endpoints:</h3>
  * <pre>
  *  GET  /estado            → getEstadoPartida()
  *  GET  /ping              → getPing()
@@ -42,8 +42,6 @@ import java.util.concurrent.Executors;
  *  POST /pong              → pong()
  * </pre>
  *
- * <p>Parâmetros enviados no body como {@code application/x-www-form-urlencoded}
- * ou como query string.</p>
  */
 public class HttpBridge {
 

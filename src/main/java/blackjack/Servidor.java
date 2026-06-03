@@ -3,26 +3,23 @@ package blackjack;
 import blackjack.rmi.IJogoBlackJack;
 
 import java.rmi.RemoteException;
+//permite que um objeto  exposto na rede para que seus métodos possam ser chamados por outras JVM
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringJoiner;
 
-/**
- * Implementação RMI do servidor de BlackJack.
- *
- * <p>Todo o estado da partida é mantido aqui. O cliente Angular consulta
- * via polling usando o {@link HttpBridge}, que repassa as chamadas para
- * este objeto RMI.</p>
- */
+//implementação RMI  que roda o servidor
+
+ //Todo o estado da partida é mantido aqui. O cliente Angular consulta via polling usando o  HttpBridge, que repassa as chamadas paraeste objeto RMI
 public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
 
-    // ── Jogadores ────────────────────────────────────────────────────────────
+    // jogadores
 
     private final String          nomeJogador1;
     private volatile String       nomeJogador2;
 
-    // ── Estado da partida ────────────────────────────────────────────────────
+    // estado da partida
 
     private GerenciadorDeBaralhos gerenciador;
     private Partida               partidaAtual;
@@ -30,7 +27,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     private volatile boolean jogador1Plantado;
     private volatile boolean jogador2Plantado;
 
-    // ── Eventos pendentes de leitura ─────────────────────────────────────────
+    // eventos pendentes de leitura
 
     private volatile String ultimaCartaJogador1;
     private volatile String ultimaCartaJogador2;
@@ -38,7 +35,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     private final Queue<String> filaMensagensJ1 = new LinkedList<>();
     private final Queue<String> filaMensagensJ2 = new LinkedList<>();
 
-    // ── Ping ─────────────────────────────────────────────────────────────────
+    // ping
 
     private volatile long pingMs    = 0;
     private volatile long tempoPing = 0;
@@ -50,7 +47,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         this.nomeJogador1 = nomeJogador1;
     }
 
-    // ── Entrada na sala ───────────────────────────────────────────────────────
+    // entrada na sala
 
     @Override
     public synchronized String entrarNaSala(String nomeJogador2) throws RemoteException {
@@ -59,7 +56,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         return nomeJogador1;
     }
 
-    // ── Controle de partida ───────────────────────────────────────────────────
+    // controle de partida
 
     @Override
     public synchronized void novaPartida() throws RemoteException {
@@ -89,7 +86,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         System.out.println("[RMI] Nova partida iniciada.");
     }
 
-    // ── Ações dos jogadores ───────────────────────────────────────────────────
+    // ações dos jogadores
 
     @Override
     public synchronized String pedirCartaJogador1() throws RemoteException {
@@ -121,7 +118,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         System.out.println("[RMI] Jogador 2 plantou.");
     }
 
-    // ── Chat ──────────────────────────────────────────────────────────────────
+    // chat
 
     @Override
     public synchronized void enviarMensagem(String remetente, String texto) throws RemoteException {
@@ -130,7 +127,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
         filaMensagensJ2.add(msg);
     }
 
-    // ── Polling – cartas ──────────────────────────────────────────────────────
+    // polling (cartas)
 
     @Override
     public synchronized String getUltimaCartaJogador1() throws RemoteException { return ultimaCartaJogador1; }
@@ -144,7 +141,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     @Override
     public synchronized void consumirCartaJogador2() throws RemoteException { ultimaCartaJogador2 = null; }
 
-    // ── Polling – estado ──────────────────────────────────────────────────────
+    // Polling (estado)
 
     @Override
     public synchronized boolean isJogador1Plantado() throws RemoteException { return jogador1Plantado; }
@@ -155,7 +152,7 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     @Override
     public synchronized String getNomeJogador2() throws RemoteException { return nomeJogador2; }
 
-    // ── Polling – mensagens ───────────────────────────────────────────────────
+    // Polling (mensagens)
 
     @Override
     public synchronized String getMensagemJogador1() throws RemoteException { return filaMensagensJ1.peek(); }
@@ -179,20 +176,21 @@ public class Servidor extends UnicastRemoteObject implements IJogoBlackJack {
     @Deprecated
     public synchronized void consumirMensagem() throws RemoteException { /* no-op */ }
 
-    // ── Ping ──────────────────────────────────────────────────────────────────
+    // ping
 
     @Override
     public long getPing() throws RemoteException { return pingMs; }
 
     @Override
     public void pong() throws RemoteException {
+        //calcula agora - tempoPing e reinicia o contador
         pingMs    = System.currentTimeMillis() - tempoPing;
         tempoPing = System.currentTimeMillis();
     }
 
     public void iniciarPing() { tempoPing = System.currentTimeMillis(); }
 
-    // ── Estado completo (JSON para o Angular) ─────────────────────────────────
+    // estado completo (JSON para o angular)
 
     @Override
     public synchronized String getEstadoPartida() throws RemoteException {

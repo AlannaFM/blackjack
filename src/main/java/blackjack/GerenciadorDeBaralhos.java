@@ -2,16 +2,15 @@ package blackjack;
 
 import java.util.ArrayList;
 
-/**
- * gerencia o baralho padrão de BlackJack (52 cartas)
- *
- * fornece sorteio sem repetição entre as cartas já distribuídas
- */
+// gerencia o baralho padrão de BlackJack (52 cartas)
+ //fornece sorteio sem repetição entre as cartas já distribuídas
+
 public class GerenciadorDeBaralhos extends ArrayList<Carta> {
 
     public GerenciadorDeBaralhos() {
         inicializarCartas();
     }
+    // percorre os 52 índices combinando imagem e valor (i % 13 mapeia cada carta ao seu valor de naipe) e popula o próprio arraylis
 
     private void inicializarCartas() {
         String[] imagens = TiposDeBaralho.getImagensCartas();
@@ -24,6 +23,7 @@ public class GerenciadorDeBaralhos extends ArrayList<Carta> {
     }
 
     public Carta buscarCartaPorUrl(String url) {
+        // percorre o baralho e retorna a carta com aquela imagem, ou null.
         for (Carta c : this)
             if (c.getImagem().equals(url)) return c;
         return null;
@@ -34,6 +34,8 @@ public class GerenciadorDeBaralhos extends ArrayList<Carta> {
     public Carta cartaAleatoria(Jogador j1, Jogador j2) {
         int total = TiposDeBaralho.totalDeCartas();
         ArrayList<Carta> emJogo = new ArrayList<>();
+
+        //repete o sorteio enquanto a carta sorteada já estiver em jogo
         if (j1.getCartas() != null)
             for (Carta c : j1.getCartas()) emJogo.add(c);
         if (j2.getCartas() != null)

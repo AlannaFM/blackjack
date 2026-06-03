@@ -24,23 +24,23 @@ import java.util.Scanner;
  */
 public class Main {
 
-    /** Nome com o qual o servidor é registrado no RMI Registry. */
+    //Nome com o qual o servidor é registrado no RMI Registry
     public static final String NOME_RMI = "BlackJackServidor";
 
-    /** Porta padrão do RMI Registry. */
+    // Porta padrão do RMI Registry
     public static final int RMI_PORT_DEFAULT = 1099;
 
-    /** Porta padrão da HTTP Bridge (acessada pelo Angular). */
+    // Porta padrão da HTTP Bridge (acessada pelo angular)
     public static final int HTTP_PORT_DEFAULT = 8080;
 
     public static void main(String[] args) throws Exception {
 
-        // ── Argumentos opcionais ─────────────────────────────────────────────
+        //  Argumentos opcionais
         String nomeJogador1 = args.length > 0 ? args[0] : lerNomeConsole();
         int rmiPort  = args.length > 1 ? Integer.parseInt(args[1]) : RMI_PORT_DEFAULT;
         int httpPort = args.length > 2 ? Integer.parseInt(args[2]) : HTTP_PORT_DEFAULT;
 
-        // ── RMI ──────────────────────────────────────────────────────────────
+        // RMI
         System.setProperty("java.rmi.server.hostname", "SEU_IP_LOCAL_OU_PUBLICO"); //p configurar o ip e nn cair em localhost
         Servidor servidor = new Servidor(nomeJogador1);
 
@@ -55,7 +55,7 @@ public class Main {
         System.out.printf( "║  HTTP API  : http://localhost:%d             ║%n", httpPort);
         System.out.println("╚══════════════════════════════════════════════╝");
 
-        // ── HTTP Bridge ───────────────────────────────────────────────────────
+        // HTTP Bridge
         HttpBridge bridge = new HttpBridge(servidor, httpPort);
         bridge.iniciar();
 

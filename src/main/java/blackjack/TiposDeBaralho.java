@@ -1,22 +1,20 @@
 package blackjack;
 
-/**
- * c=copas, d=ouros, p=paus, t=espadas,
- * numeradas de 1 a 13 (1=Ás, 11=Valete, 12=Dama, 13=Rei).
- *
- * ás=11 (ajustado para 1 por {@link JogadorBlackJack} se necessário),
- * 2-10=valor nominal, valete/dama/rei=10.
- */
+
+  //c=copas, d=ouros, p=paus, t=espadas,
+  //numeradas de 1 a 13 (1=Ás, 11=Valete, 12=Dama, 13=Rei).
+ //ás=11 (ajustado para 1 por se necessário),
+
 public final class TiposDeBaralho {
 
     // ── Constantes do baralho ─────────────────────────────────────────────────
 
     public static final String NOME          = "BlackJack";
     public static final float  LIMITE        = 21f;
-    public static final float  VALOR_MAXIMO  = 11f;
-    public static final String IMAGEM_REVERSO = "imagens/r.jpg";
+    public static final float  VALOR_MAXIMO  = 11f; //valor inicial do ás
+    public static final String IMAGEM_REVERSO = "imagens/r.jpg"; //caminho do verso da carta
 
-    /** Imagens das 52 cartas (4 naipes × 13 cartas). */
+    //Imagens das 52 cartas (4 naipes × 13 cartas).
     private static final String[] IMAGENS_CARTAS = {
             "imagens/c1.jpg",  "imagens/c2.jpg",  "imagens/c3.jpg",  "imagens/c4.jpg",
             "imagens/c5.jpg",  "imagens/c6.jpg",  "imagens/c7.jpg",  "imagens/c8.jpg",
@@ -32,15 +30,14 @@ public final class TiposDeBaralho {
             "imagens/t9.jpg",  "imagens/t10.jpg", "imagens/t11.jpg", "imagens/t12.jpg", "imagens/t13.jpg"
     };
 
-    /**
-     * Valores por posição dentro de cada naipe (índice 0–12):
-     * Ás=11, 2–10=valor nominal, Valete=10, Dama=10, Rei=10.
-     */
+    // Valores por posição dentro de cada naipe (índice 0–12):
+    // Ás=11, 2–10=valor nominal, Valete=10, Dama=10, Rei=10.
+
     private static final float[] VALORES = {
             11f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 10f, 10f, 10f
     };
 
-    // ── API pública ───────────────────────────────────────────────────────────
+    //  api pública
 
     public static String[] getImagensCartas() {
         return IMAGENS_CARTAS.clone();
@@ -54,6 +51,6 @@ public final class TiposDeBaralho {
         return IMAGENS_CARTAS.length;
     }
 
-    // Construtor privado: classe utilitária, não deve ser instanciada.
+    // classe utilitária, não deve ser instanciada.
     private TiposDeBaralho() {}
 }
